@@ -113,7 +113,7 @@ void menu() {
     cout << "3. Multiply fractions\n";
     cout << "4. Divide fractions\n";
     cout << "5. Abbreviation fraction\n";
-    cout << "5. Exit\n";
+    cout << "6. Exit\n";
 }
 
 int main() {
