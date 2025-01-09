@@ -1,127 +1,95 @@
 #include <iostream>
 using namespace std;
 
-struct fraction {
+struct Complex {
 private:
-    int *_numerator = nullptr;
-    int *_denominator = nullptr;
+    double *_real = nullptr;
+    double *_imag = nullptr;
+
 public:
-
-    // constructor
-    fraction(int numerator = 0, int denominator = 1) {
-        setNumerator(numerator);
-        if (denominator == 0) {
-            cout << "Denominator cannot be zero. Setting to 1." << endl;
-            denominator = 1;
-        }
-        setDenominator(denominator);
+    // Constructor
+    Complex(double real = 0.0, double imag = 0.0) {
+        setReal(real);
+        setImag(imag);
     }
 
     // getter
-    int getNumerator() const {
-        return (_numerator == nullptr) ? 0 : *_numerator;
+    double getReal() const {
+        return (_real == nullptr) ? 0.0 : *_real;
     }
 
     // getter
-    int getDenominator() const {
-        return (_denominator == nullptr) ? 0 : *_denominator;
+    double getImag() const {
+        return (_imag == nullptr) ? 0.0 : *_imag;
     }
 
     // setter
-    void setNumerator(int numerator) {
-        if (_numerator != nullptr) {
-            delete _numerator;
+    void setReal(double real) {
+        if (_real != nullptr) {
+            delete _real;
         }
-        _numerator = new int{numerator};
+        _real = new double{real};
     }
 
     // setter
-    void setDenominator(int denominator) {
-        if (_denominator != nullptr) {
-            delete _denominator;
+    void setImag(double imag) {
+        if (_imag != nullptr) {
+            delete _imag;
         }
-        _denominator = new int{denominator};
+        _imag = new double{imag};
     }
 
-    // destructor
-    ~fraction() {
-        delete _numerator;
-        delete _denominator;
+    // Destructor
+    ~Complex() {
+        delete _real;
+        delete _imag;
     }
 };
 
-// Додавання дробів
-fraction add(const fraction &a, const fraction &b) {
-    int num1 = a.getNumerator() * b.getDenominator() + b.getNumerator() * a.getDenominator(); // Чисельник результату
-    int num2 = a.getDenominator() * b.getDenominator(); // Спільний знаменник
-
-    return fraction(num1, num2);
+// Сума комплексних чисел
+Complex add(const Complex &a, const Complex &b) {
+    return Complex(a.getReal() + b.getReal(), a.getImag() + b.getImag());
 }
 
-// Віднімання дробів
-fraction subtract(const fraction &a, const fraction &b) {
-    int num1 = a.getNumerator() * b.getDenominator() - b.getNumerator() * a.getDenominator();
-    int num2 = a.getDenominator() * b.getDenominator();
-
-    return fraction(num1, num2);
+// Різниця комплексних чисел
+Complex subtract(const Complex &a, const Complex &b) {
+    return Complex(a.getReal() - b.getReal(), a.getImag() - b.getImag());
 }
 
-// Множення дробів
-fraction multiply(const fraction &a, const fraction &b) {
-    int num1 = a.getNumerator() * b.getNumerator();
-    int num2 = a.getDenominator() * b.getDenominator();
-
-    return fraction(num1, num2);
+// Множення комплексних чисел
+Complex multiply(const Complex &a, const Complex &b) {
+    double realPart = a.getReal() * b.getReal() - a.getImag() * b.getImag();
+    double imagPart = a.getReal() * b.getImag() + a.getImag() * b.getReal();
+    return Complex(realPart, imagPart);
 }
 
-// Ділення дробів
-fraction divide(const fraction &a, const fraction &b) {
-    if (b.getNumerator() == 0) {
-        cout << "Division by zero is undefined. Returning the first fraction." << endl;
+// Ділення комплексних чисел
+Complex divide(const Complex &a, const Complex &b) {
+    double denominator = b.getReal() * b.getReal() + b.getImag() * b.getImag();
+    if (denominator == 0) {
+        cout << "Division by zero is undefined. Returning the first complex number." << endl;
         return a;
     }
-    int num1 = a.getNumerator() * b.getDenominator();
-    int num2 = a.getDenominator() * b.getNumerator();
-
-    return fraction(num1, num2);
+    double realPart = (a.getReal() * b.getReal() + a.getImag() * b.getImag()) / denominator;
+    double imagPart = (a.getImag() * b.getReal() - a.getReal() * b.getImag()) / denominator;
+    return Complex(realPart, imagPart);
 }
-
-// Функція для обчислення НСД
-int NCD(int a, int b) {
-    while (b != 0) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
-}
-
-// Скорочення дробу
-fraction abbreviation(const fraction &a) {
-    int num = a.getNumerator();
-    int den = a.getDenominator();
-    int g = NCD(abs(num), abs(den)); // Обчислюємо НСД
-
-    return fraction(num / g, den / g);
-}
-
 
 void menu() {
     cout << "\nMenu:\n";
-    cout << "1. Add fractions\n";
-    cout << "2. Subtract fractions\n";
-    cout << "3. Multiply fractions\n";
-    cout << "4. Divide fractions\n";
-    cout << "5. Abbreviation fraction\n";
+    cout << "1. Add complex numbers\n";
+    cout << "2. Subtract complex numbers\n";
+    cout << "3. Multiply complex numbers\n";
+    cout << "4. Divide complex numbers\n";
     cout << "5. Exit\n";
 }
 
 int main() {
-    fraction a(1, 4);
-    fraction b(2, 8);
+    Complex a(3.0, 4.0);
+    Complex b(1.0, 2.0);
 
-    cout << " First fraction: " << a.getNumerator() << " / " << a.getDenominator() << endl;
-    cout << " Second fraction: " << b.getNumerator() << " / " << b.getDenominator() << endl;
+    cout << "First complex number: " << a.getReal() << " + " << a.getImag() << "i" << endl;
+    cout << "Second complex number: " << b.getReal() << " + " << b.getImag() << "i" << endl;
 
     while (true) {
         menu();
@@ -131,33 +99,28 @@ int main() {
 
         switch (choice) {
             case 1:
-                cout << a.getNumerator() << " / " << a.getDenominator() << " + ";
-                cout << b.getNumerator() << " / " << b.getDenominator() << " = ";
-                cout << add(a, b).getNumerator() << " / " << add(a, b).getDenominator() << endl;
+                cout << "Sum: ";
+                cout << add(a, b).getReal() << " + " << add(a, b).getImag() << "i" << endl;
                 break;
             case 2:
-                cout << a.getNumerator() << " / " << a.getDenominator() << " - ";
-                cout << b.getNumerator() << " / " << b.getDenominator() << " = ";
-                cout << subtract(a, b).getNumerator() << " / " << subtract(a, b).getDenominator() << endl;
+                cout << "Difference: ";
+                cout << subtract(a, b).getReal() << " + " << subtract(a, b).getImag() << "i" << endl;
                 break;
             case 3:
-                cout << a.getNumerator() << " / " << a.getDenominator() << " * ";
-                cout << b.getNumerator() << " / " << b.getDenominator() << " = ";
-                cout << multiply(a, b).getNumerator() << " / " << multiply(a, b).getDenominator() << endl;
+                cout << "Product: ";
+                cout << multiply(a, b).getReal() << " + " << multiply(a, b).getImag() << "i" << endl;
                 break;
             case 4:
-                cout << a.getNumerator() << " / " << a.getDenominator() << " : ";
-                cout << b.getNumerator() << " / " << b.getDenominator() << " = ";
-                cout << divide(a, b).getNumerator() << " / " << divide(a, b).getDenominator() << endl;
+                cout << "Quotient: ";
+                cout << divide(a, b).getReal() << " + " << divide(a, b).getImag() << "i" << endl;
                 break;
             case 5:
-                cout << abbreviation(a).getNumerator() << " / " << abbreviation(a).getDenominator();
-            case 6:
                 cout << "Exiting..." << endl;
                 return 0;
             default:
                 cout << "Invalid choice. Please try again." << endl;
         }
     }
+
     return 0;
 }
