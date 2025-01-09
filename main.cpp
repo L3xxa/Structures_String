@@ -86,12 +86,33 @@ fraction divide(const fraction &a, const fraction &b) {
     return fraction(num1, num2);
 }
 
+// Функція для обчислення НСД
+int NCD(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+// Скорочення дробу
+fraction abbreviation(const fraction &a) {
+    int num = a.getNumerator();
+    int den = a.getDenominator();
+    int g = NCD(abs(num), abs(den)); // Обчислюємо НСД
+
+    return fraction(num / g, den / g);
+}
+
+
 void menu() {
     cout << "\nMenu:\n";
     cout << "1. Add fractions\n";
     cout << "2. Subtract fractions\n";
     cout << "3. Multiply fractions\n";
     cout << "4. Divide fractions\n";
+    cout << "5. Abbreviation fraction\n";
     cout << "5. Exit\n";
 }
 
@@ -130,6 +151,8 @@ int main() {
                 cout << divide(a, b).getNumerator() << " / " << divide(a, b).getDenominator() << endl;
                 break;
             case 5:
+                cout << abbreviation(a).getNumerator() << " / " << abbreviation(a).getDenominator();
+            case 6:
                 cout << "Exiting..." << endl;
                 return 0;
             default:
